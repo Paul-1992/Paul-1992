@@ -79,3 +79,9 @@ print("GAME OVER各玩家的成绩如下:".center(50, "*"))
 # 循环打印出玩家最后的分数
 for user in result:
     print(f"玩家 《{user}》 的得分是：{result[user]}")
+    
+    
+    
+    
+    
+    
