@@ -1,0 +1,81 @@
+import random
+
+print("欢迎进入扑克牌游戏!".center(50, "*"))
+# 生成一幅扑克牌
+total_pocket = []
+pocket_color = ['♠', '♥', '♦', '♣']
+pocket_num = list(range(2, 11))
+pocket_num.extend('JQKA')
+for color in pocket_color:
+    for num in pocket_num:
+        if num in ['J', 'Q', 'K']:
+            score = 0.5
+        elif num in ['A']:
+            score = 1
+        else:
+            score = num
+        data_pocket = (color, num, score)
+        total_pocket.append(data_pocket)
+# 定义特殊的扑克牌 大王 小王
+special_pocket = [('小王', 14, 0.5), ('大王', 15, 0.5)]
+total_pocket = total_pocket + special_pocket
+print(total_pocket)
+# 玩家输入并做判断输入是否规范
+user_count = 0
+while True:
+    count = input("请输入游戏玩家数量(2-20):")
+    if count.isdecimal() and 1 < int(count) < 20:
+        # 检测输入的值是否是一个2-20
+        user_count = int(count)
+        break  #
+    else:
+        print("输入错误，请输入正确内容数字2-20:")
+message = f"有{user_count}人参加扑克游戏"
+print(message)
+
+# 请玩家输入姓名，并打印所有的玩家姓名
+user_list = []
+for i in range(1, user_count + 1):  # 循环让玩家输入姓名 最后输出所有的玩家姓名
+    tips = f"请输入玩家的姓名({i}/{user_count}):"
+    name = input(tips)
+    user_list.append(name)
+print(f"参与游戏的玩家有:{user_list}")
+
+# 首轮默认给玩家 发一轮牌并打印玩家拿到的扑克牌和当前玩家获得的分数
+print("第一轮发牌开始".center(50, "*"))
+result = {}
+for user in range(0, len(user_list)):
+    index = random.randint(0, len(total_pocket) - 1)
+    print(f"首轮发牌结束玩家:{user_list[user]}手中的扑克:{total_pocket[index]}")
+    result[user_list[user]] = total_pocket[index][2]
+    total_pocket.pop(index)
+    print(f"《{user_list[user]}》当前的分数为:{result.get(user_list[user])}\n")
+
+# 循环玩家列表，让每一个玩家选择是否要牌，并计算玩家的分数大于11分 则提示牌爆掉了，你已出局了
+print("开始后续发牌，您可以选择要或者不要".center(50, "*"))
+for user in range(len(user_list)):
+    while True:
+        choice = input(f"《{user_list[user]}》请选择是否要牌(Y/N)").strip()
+        choice = choice.upper()
+        if choice not in {"Y", "N"}:
+            print("输入错误请重新输入:\n")
+
+        if choice == "N":
+            print(f"《{user_list[user]}》不要牌了，下一个！\n")
+            break
+        if choice == "Y":
+            index = random.randint(0, len(total_pocket) - 1)
+            print(f"《{user_list[user]}》的扑克牌为:{total_pocket[index]}\n")
+            result[user_list[user]] += total_pocket[index][2]
+            total_pocket.pop(index)
+            print(f"《{user_list[user]}》当前的分数为:{result.get(user_list[user])}\n")
+            while result[user_list[user]] <= 11:
+                break
+            else:
+                result[user_list[user]] = 0
+                print(f"《{user_list[user]}》，你的牌已经爆掉了，你已出局！\n")
+                break
+print("GAME OVER各玩家的成绩如下:".center(50, "*"))
+# 循环打印出玩家最后的分数
+for user in result:
+    print(f"玩家 《{user}》 的得分是：{result[user]}")
